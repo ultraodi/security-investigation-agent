@@ -1,4 +1,5 @@
 from agents.investigation_agent import investigation_agent
+from agents.response_agent import response_agent
 
 
 def main():
@@ -11,7 +12,7 @@ def main():
 
     print("Running security investigation...\n", flush=True)
 
-    result = investigation_agent.invoke(
+    investigation_result = investigation_agent.invoke(
         {
             "messages": [
                 {"role": "user", "content": content}
@@ -22,7 +23,24 @@ def main():
 
     print("\nInvestigation Report:\n")
 
-    print(result["messages"][-1].content)
+    print(investigation_result["messages"][-1].content)
+
+
+    print("Running Response plan...\n", flush=True)
+
+    response_result = response_agent.invoke(
+        {
+            "messages": [
+                {"role": "user", "content": content}
+            ]
+        },
+        config={"configurable": {"thread_id": "investigation-req-001"}},
+    )
+
+    print("\nResponse Report:\n")
+
+    print(response_result["messages"][-1].content)
+
 
 
 if __name__ == "__main__":
